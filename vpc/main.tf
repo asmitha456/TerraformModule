@@ -1,29 +1,29 @@
 #create an vpc
 resource "aws_vpc" "my_vpc" {
-    cidr_block = "10.0.0.0./16"
+    cidr_block = "10.0.0.0/16"
     instance_tenancy = "default"
     enable_dns_support = true
     enable_dns_hostnames = true
-    taggs = {
+    tags = {
         Name = "My_VPC"
     }
 }
 
 #create subnets
 resource "aws_subnet" "public_subnet" {
-    vpc_id = aws_vpc.my_vpc.vpc_id
+    vpc_id = aws_vpc.my_vpc.id
     cidr_block = "10.0.1.0/24"
     map_public_ip_on_launch = true
-    availability_zone = var.zone1
+    availability_zone = "us-east-1a"
     tags = {
         Name = "Public_Subnet"
     }
 }
 resource "aws_subnet" "private_subnet" {
-    vpc_id = aws_vpc.my_vpc.vpc_id
+    vpc_id = aws_vpc.my_vpc.id
     cidr_block = "10.0.2.0/24"
     map_public_ip_on_launch = true
-    availability_zone = var.zone2
+    availability_zone = "us-esat-1b"
     tags = {
         Name = "Public_Subnet"
     }
@@ -31,7 +31,7 @@ resource "aws_subnet" "private_subnet" {
 
 #create an internet gateway
 resource "aws_internet_gateway" "igw" {
-    vpc_id = aws_vpc.my_vpc.vpc_id
+    vpc_id = aws_vpc.my_vpc.id
     tags = {
         Name = "IGW"
     }
