@@ -1,17 +1,17 @@
 #create an S3 bucket and versioning
 resource "aws_s3_bucket" "my_bucket" {
     bucket = "new-bucket"
-    region = var.region
-    avalability_zone = var.zone1
-
-    versioning {
-        enabled = true
-    }
+    region = "us-east-1"
     tags = {
         Name = "New-bucket"
     }
 }
-
+resource "aws_s3_bucket_versioning" "version" {
+    bucket = aws_s3_bucket.my_bucket.id
+    versioning_configuration {
+        status = "Enabled"
+    }
+}
 #bucket to allow public read access
 resource "aws_s3_bucket_acl" "bucket_acl" {
     bucket = aws_s3_bucket.my_bucket.id
@@ -19,16 +19,16 @@ resource "aws_s3_bucket_acl" "bucket_acl" {
 }
 
 #create bucket policy that allows read-only access to a specific IAM user
-resource "aws_s3_bucket_policy" "bucket_policy" {
+resource "aws_s3_bucket_policy" "allow_read_only_access" {
     bucket = aws_s3_bucket.my_bucket.id
-    policy = data. aws_iam_policy_document.allow_read-only_access.json
+    policy = data.aws_iam_policy_document.allow_read_only_access.json
 }
 
 data "aws_iam_policy_document" "allow_read_only_access" {
     statement {
         principals {
             type = "aws"
-            identifiers ["6836330111377"]
+            identifiers = ["6836330111377"]
         }
         actions = [
             "s3:GetObjet",
